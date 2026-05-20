@@ -57,9 +57,10 @@ public class KpiService {
         try {
             KpiCalculator calculator = kpiFactory.obtenerCalculador(kpi.getCategoria());
             BigDecimal resultado = calculator.calcular(kpi.getValor(), BigDecimal.valueOf(100));
+            kpi.setValor(resultado);
             kpi.setUnidad(calculator.getUnidad());
         } catch (IllegalArgumentException e) {
-            // categoria no soportada, se deja el valor como está
+            throw new IllegalArgumentException("Categoría KPI no soportada: " + kpi.getCategoria());
         }
     }
 }
