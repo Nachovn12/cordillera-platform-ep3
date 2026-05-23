@@ -38,6 +38,10 @@ public class DashboardService {
 
         String status = alertas.isEmpty() ? "Operativo" : "Degradado";
 
+        if (dataResult.success() && !dataResult.data().isEmpty()) {
+            alertas.add("Datos operacionales disponibles desde Data Service");
+        }
+
         return new DashboardResponse(status, BigDecimal.ZERO, kpiResult.data(), alertas);
     }
 
@@ -49,7 +53,7 @@ public class DashboardService {
 
         String status = alertas.isEmpty() ? "Operativo" : "Degradado";
 
-        return new DashboardResponse(status, null, kpiResult.data(), alertas);
+        return new DashboardResponse(status, BigDecimal.ZERO, kpiResult.data(), alertas);
     }
 
     public DashboardResponse getDashboardSucursal(Long id) {
@@ -59,9 +63,23 @@ public class DashboardService {
         List<String> alertas = new ArrayList<>();
         addAlertIfFailed(alertas, dataResult);
 
-        String status = alertas.isEmpty() ? "Operativo" : "Degradado";
+        if (dataResult.success()) {
+            if (dataResult.data().isEmpty()) {
+                alertas.add("No existen datos para la sucursal " + id);
+            } else {
+                alertas.add("Datos de sucursal " + id + " obtenidos desde Data Service");
+            }
+        }
 
-        return new DashboardResponse(status, BigDecimal.ZERO, dataResult.data(), alertas);
+        String status = dataResult.success() ? "Operativo" : "Degradado";
+
+        return new DashboardResponse(
+                status,
+                BigDecimal.ZERO,
+                Collections.emptyList(),
+                alertas,
+                dataResult.data()
+        );
     }
 
     private FetchResult fetchList(String url, String serviceName) {

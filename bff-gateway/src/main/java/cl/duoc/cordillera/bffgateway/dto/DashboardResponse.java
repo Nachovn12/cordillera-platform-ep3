@@ -1,6 +1,7 @@
 package cl.duoc.cordillera.bffgateway.dto;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 public class DashboardResponse {
@@ -9,15 +10,26 @@ public class DashboardResponse {
     private BigDecimal ventasTotales;
     private List<?> kpis;
     private List<String> alertas;
+    private List<?> datosSucursal;
 
     public DashboardResponse() {}
 
-    public DashboardResponse(String statusBff, BigDecimal ventasTotales, 
-                              List<?> kpis, List<String> alertas) {
+    public DashboardResponse(String statusBff, BigDecimal ventasTotales,
+            List<?> kpis, List<String> alertas) {
         this.statusBff = statusBff;
         this.ventasTotales = ventasTotales;
-        this.kpis = kpis;
-        this.alertas = alertas;
+        this.kpis = kpis != null ? kpis : Collections.emptyList();
+        this.alertas = alertas != null ? alertas : Collections.emptyList();
+        this.datosSucursal = Collections.emptyList();
+    }
+
+    public DashboardResponse(String statusBff, BigDecimal ventasTotales,
+            List<?> kpis, List<String> alertas, List<?> datosSucursal) {
+        this.statusBff = statusBff;
+        this.ventasTotales = ventasTotales;
+        this.kpis = kpis != null ? kpis : Collections.emptyList();
+        this.alertas = alertas != null ? alertas : Collections.emptyList();
+        this.datosSucursal = datosSucursal != null ? datosSucursal : Collections.emptyList();
     }
 
     public String getStatusBff() { return statusBff; }
@@ -28,4 +40,6 @@ public class DashboardResponse {
     public void setKpis(List<?> kpis) { this.kpis = kpis; }
     public List<String> getAlertas() { return alertas; }
     public void setAlertas(List<String> alertas) { this.alertas = alertas; }
+    public List<?> getDatosSucursal() { return datosSucursal; }
+    public void setDatosSucursal(List<?> datosSucursal) { this.datosSucursal = datosSucursal; }
 }
