@@ -99,12 +99,15 @@ class KpiServiceTest {
     }
 
     @Test
-    void findById_debeLanzarExcepcionSiNoExiste() {
+    void findById_debeLanzarNotFound404SiNoExiste() {
         // Arrange
         when(kpiRepository.findById(99L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> kpiService.findById(99L));
+        org.springframework.web.server.ResponseStatusException ex =
+                assertThrows(org.springframework.web.server.ResponseStatusException.class,
+                        () -> kpiService.findById(99L));
+        assertEquals(404, ex.getStatusCode().value());
         assertTrue(ex.getMessage().contains("99"));
         verify(kpiRepository).findById(99L);
     }
@@ -163,12 +166,15 @@ class KpiServiceTest {
     }
 
     @Test
-    void update_debeLanzarExcepcionSiKpiNoExiste() {
+    void update_debeLanzarNotFound404SiKpiNoExiste() {
         // Arrange
         when(kpiRepository.findById(99L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> kpiService.update(99L, kpi));
+        org.springframework.web.server.ResponseStatusException ex =
+                assertThrows(org.springframework.web.server.ResponseStatusException.class,
+                        () -> kpiService.update(99L, kpi));
+        assertEquals(404, ex.getStatusCode().value());
         verify(kpiRepository, never()).save(any());
     }
 

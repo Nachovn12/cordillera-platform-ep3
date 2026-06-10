@@ -83,7 +83,6 @@ class DatoServiceTest {
 
         // Assert
         assertEquals(1L, resultado.getId());
-        assertEquals("CRM", new Dato(1L, "CRM", "CLIENTE", "ACTIVO", null, 2L).getSistemaOrigen());
         assertEquals("POS", resultado.getSistemaOrigen());
         verify(datoRepository).findById(1L);
     }

@@ -1,5 +1,6 @@
 package cl.duoc.cordillera.kpiservice.controller;
 
+import cl.duoc.cordillera.kpiservice.exception.GlobalExceptionHandler;
 import cl.duoc.cordillera.kpiservice.model.Kpi;
 import cl.duoc.cordillera.kpiservice.service.KpiService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +42,9 @@ class KpiControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(kpiController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(kpiController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         objectMapper = new ObjectMapper();
     }
 
@@ -96,14 +99,15 @@ class KpiControllerTest {
     }
 
     @Test
-    void getById_debeRetornar500CuandoKpiNoExiste() throws Exception {
-        // Arrange — KpiService lanza RuntimeException (sin @ResponseStatus → 500)
+    void getById_debeRetornarNotFoundCuandoKpiNoExiste() throws Exception {
+        // Arrange — KpiService lanza ResponseStatusException 404
         when(kpiService.findById(99L))
-                .thenThrow(new RuntimeException("KPI no encontrado: 99"));
+                .thenThrow(new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "KPI no encontrado con id: 99"));
 
         // Act & Assert
         mockMvc.perform(get("/api/kpis/99"))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
 
         verify(kpiService).findById(99L);
     }
