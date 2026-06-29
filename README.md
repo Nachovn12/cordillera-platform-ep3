@@ -25,11 +25,11 @@
 
 ## 2. Integrantes del equipo
 
-| Integrante      | Responsabilidad principal                                                                                                                                          |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Ignacio Valeria | Frontend React + Report Service. Implementación de interfaz ejecutiva, generación/exportación de reportes, documentación técnica, diagramas y apoyo en evidencias. |
-| Benjamín Palma  | BFF Gateway + KPI Service. Implementación del punto de entrada central, orquestación de datos para dashboard y cálculo de indicadores ejecutivos.                  |
-| Benjamín Flores | Data Service. Implementación del servicio de datos operacionales, persistencia y endpoints para información consolidada desde sistemas origen.                     |
+| Integrante      | Responsabilidades y CORDs Asignadas |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Ignacio Valeria** | **Frontend & UX:** Migración a React Router y manejo de estados UI (loading, error, degradado).<br>**Report Service:** CRUD de reportes, generación y exportación (PDF/Excel/JSON) vía Factory Method, testing y JaCoCo.<br>**Infraestructura:** Creación de repo, `repositorios.txt` y diagrama de arquitectura. |
+| **Benjamín Palma**  | **KPI Service:** CRUD de KPIs, filtrado y cálculo dinámico vía Factory Method, testing y JaCoCo.<br>**BFF Gateway:** Endpoint Dashboard consolidado con Circuit Breaker, manejo de errores y timeouts. testing y JaCoCo.<br>**Documentación:** Informe de pruebas unitarias y cobertura (`informe-pruebas-unitarias.pdf`). |
+| **Benjamín Flores** | **Data Service:** CRUD de datos operacionales provenientes de sistemas externos, filtrado por sistema/sucursal, testing y JaCoCo.<br>**Documentación:** Informe de persistencia y base de datos con diagrama ER (`persistencia.pdf`). |
 
 ---
 
