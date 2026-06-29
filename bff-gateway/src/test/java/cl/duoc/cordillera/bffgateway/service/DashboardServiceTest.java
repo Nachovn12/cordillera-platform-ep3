@@ -77,7 +77,7 @@ class DashboardServiceTest {
     // -------------------------------------------------------
 
     @Test
-    void getDashboard_cuandoTodosMicroserviciosResponden_debeRetornarStatusOperativo() {
+    void getDashboard_conTodosLosServiciosOnline_retornaStatusOperativo() {
         // Arrange
         mockEndpoint("http://localhost:8084/api/kpis");
         mockEndpoint("http://localhost:8083/api/datos");
@@ -92,7 +92,7 @@ class DashboardServiceTest {
     }
 
     @Test
-    void getDashboard_cuandoKpiServiceFalla_debeRetornarStatusDegradado() {
+    void getDashboard_conKpiServiceCaido_retornaStatusDegradado() {
         // Arrange
         mockEndpointFallando("http://localhost:8084/api/kpis");
         mockEndpoint("http://localhost:8083/api/datos");
@@ -175,7 +175,7 @@ class DashboardServiceTest {
     // -------------------------------------------------------
 
     @Test
-    void getDashboardSucursal_cuandoSucursalTieneDatos_debeRetornarOperativo() {
+    void getDashboardSucursal_conSucursalValida_retornaFiltroCorrecto() {
         // Arrange
         mockEndpointWithData("http://localhost:8083/api/datos/sucursal/1",
                 List.of(Map.of("id", 1, "sistemaOrigen", "POS", "valor", "150000")));

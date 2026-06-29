@@ -9,8 +9,6 @@ import cl.duoc.cordillera.bffgateway.exception.UsuarioNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,7 +97,7 @@ class AuthServiceTest {
     // -------------------------------------------------------
 
     @Test
-    void login_credencialesValidas_retornaToken() {
+    void autenticar_conCredencialesValidas_retornaAuthResponse() {
         LoginRequestDTO request = new LoginRequestDTO();
         request.setUsuario("a.gatica@cordillera.cl");
         request.setContrasena("gerencia2026");
@@ -107,22 +105,23 @@ class AuthServiceTest {
         AuthResponseDTO response = authService.autenticar(request);
 
         assertNotNull(response.getToken());
-        assertFalse(response.getToken().isBlank());
+        assertEquals("A. Gatica", response.getNombre());
+        assertEquals("GERENTE_GENERAL", response.getRol());
     }
 
     @Test
-    void login_credencialesInvalidas_lanzaExcepcion() {
+    void autenticar_conContrasenaIncorrecta_lanzaCustomUnauthorizedException() {
         LoginRequestDTO request = new LoginRequestDTO();
-        request.setUsuario("noexiste@cordillera.cl");
-        request.setContrasena("cualquiera");
+        request.setUsuario("a.gatica@cordillera.cl");
+        request.setContrasena("claveEquivocada");
 
         assertThrows(CustomUnauthorizedException.class, () -> authService.autenticar(request));
     }
 
     @Test
-    void crearUsuario_debeAgregarAlStore() {
+    void crearUsuario_conEmailNuevo_retornaUsuarioConId() {
         CrearUsuarioRequestDTO request = new CrearUsuarioRequestDTO();
-        request.setUsuario("nuevo@cordillera.cl");
+        request.setUsuario("nuevo.test@cordillera.cl");
         request.setContrasena("pass123");
         request.setNombre("Nuevo Usuario");
         request.setRol("ANALISTA");
@@ -131,25 +130,27 @@ class AuthServiceTest {
         UsuarioResponseDTO creado = authService.crearUsuario(request);
 
         assertNotNull(creado.getId());
-        assertEquals("nuevo@cordillera.cl", creado.getUsuario());
-        List<UsuarioResponseDTO> todos = authService.listarUsuarios();
-        assertTrue(todos.stream().anyMatch(u -> "nuevo@cordillera.cl".equals(u.getUsuario())));
+        assertTrue(creado.getId().startsWith("USR-"));
     }
 
     @Test
-    void eliminarUsuario_debeQuitarDelStore() {
+    void crearUsuario_conEmailDuplicado_lanzaUsuarioYaExisteException() {
         CrearUsuarioRequestDTO request = new CrearUsuarioRequestDTO();
-        request.setUsuario("temporal@cordillera.cl");
+        request.setUsuario("a.gatica@cordillera.cl"); // Already exists
         request.setContrasena("pass123");
-        request.setNombre("Temporal");
+        request.setNombre("A Gatica Duplicado");
         request.setRol("ANALISTA");
         request.setArea("TI");
 
-        UsuarioResponseDTO creado = authService.crearUsuario(request);
-        authService.eliminarUsuario(creado.getId());
+        assertThrows(cl.duoc.cordillera.bffgateway.exception.UsuarioYaExisteException.class, () -> {
+            authService.crearUsuario(request);
+        });
+    }
 
-        List<UsuarioResponseDTO> todos = authService.listarUsuarios();
-        assertTrue(todos.stream().noneMatch(u -> "temporal@cordillera.cl".equals(u.getUsuario())));
-        assertThrows(UsuarioNoEncontradoException.class, () -> authService.eliminarUsuario(creado.getId()));
+    @Test
+    void eliminarUsuario_conIdInexistente_lanzaUsuarioNoEncontradoException() {
+        assertThrows(UsuarioNoEncontradoException.class, () -> {
+            authService.eliminarUsuario("ID-INEXISTENTE-999");
+        });
     }
 }

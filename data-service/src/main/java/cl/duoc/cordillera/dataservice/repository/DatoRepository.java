@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface DatoRepository extends JpaRepository<Dato, Long> {
 
     List<Dato> findBySistemaOrigen(String sistemaOrigen);

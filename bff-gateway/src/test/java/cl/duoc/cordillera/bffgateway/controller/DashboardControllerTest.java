@@ -45,7 +45,7 @@ class DashboardControllerTest {
     // -------------------------------------------------------
 
     @Test
-    void getStats_cuandoTodoOperativo_debeRetornarOkConStatusOperativo() throws Exception {
+    void getStats_retorna200ConDashboardCompleto() throws Exception {
         // Arrange
         when(dashboardService.getDashboard()).thenReturn(dashboardOperativo());
 
@@ -59,7 +59,7 @@ class DashboardControllerTest {
     }
 
     @Test
-    void getStats_cuandoStatusEsDegradado_debeRetornarOkConStatusDegradado() throws Exception {
+    void getStats_degradado_retorna200ConAlerta() throws Exception {
         // Arrange
         DashboardResponse degradado = new DashboardResponse(
                 "Degradado", BigDecimal.ZERO,

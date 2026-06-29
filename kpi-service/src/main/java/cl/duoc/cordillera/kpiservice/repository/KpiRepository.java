@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface KpiRepository extends JpaRepository<Kpi, Long> {
     List<Kpi> findByCategoria(String categoria);
 }
