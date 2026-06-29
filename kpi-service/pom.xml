@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version> <!-- lookup parent from repository -->
+		<version>4.0.6</version>
 	</parent>
 	<groupId>cl.duoc.cordillera</groupId>
 	<artifactId>kpi-service</artifactId>
@@ -48,7 +48,6 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>3.0.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -64,17 +63,19 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Dependencia explícita para resolución IDE de @DataJpaTest, @WebMvcTest, etc. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-test-autoconfigure</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Actuator: expone /actuator/health para Docker health checks -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -106,7 +107,6 @@
 						<phase>verify</phase>
 						<goals><goal>report</goal></goals>
 					</execution>
-
 					<execution>
 						<id>check</id>
 						<phase>verify</phase>
