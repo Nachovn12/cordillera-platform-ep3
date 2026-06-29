@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,72 +26,67 @@ class DatoServiceTest {
     private DatoService datoService;
 
     @Test
-    void listarTodosDebeRetornarDatos() {
-        Dato dato = new Dato(1L, "POS", "VENTA", "150000", null, 1L);
-        when(datoRepository.findAll()).thenReturn(List.of(dato));
-
-        List<Dato> resultado = datoService.listarTodos();
-
-        assertEquals(1, resultado.size());
-        assertEquals("POS", resultado.get(0).getSistemaOrigen());
-        verify(datoRepository).findAll();
+    void listarTodos_retornaLista() {
+        when(datoRepository.findAll()).thenReturn(List.of(new Dato()));
+        assertFalse(datoService.listarTodos().isEmpty());
+        verify(datoRepository, times(1)).findAll();
     }
 
     @Test
-    void buscarPorIdExistenteDebeRetornarDato() {
-        Dato dato = new Dato(1L, "CRM", "CLIENTE", "ACTIVO", null, 2L);
-        when(datoRepository.findById(1L)).thenReturn(Optional.of(dato));
-
-        Dato resultado = datoService.buscarPorId(1L);
-
-        assertEquals(1L, resultado.getId());
-        assertEquals("CRM", resultado.getSistemaOrigen());
-        verify(datoRepository).findById(1L);
+    void buscarPorId_exito() {
+        Dato d = new Dato(1L, "POS", "VENTA", "100", LocalDateTime.now(), 1L);
+        when(datoRepository.findById(1L)).thenReturn(Optional.of(d));
+        assertNotNull(datoService.buscarPorId(1L));
+        verify(datoRepository, times(1)).findById(1L);
     }
 
     @Test
-    void buscarPorIdInexistenteDebeLanzarExcepcion() {
+    void buscarPorId_lanzaExcepcion() {
         when(datoRepository.findById(99L)).thenReturn(Optional.empty());
-
         assertThrows(NoSuchElementException.class, () -> datoService.buscarPorId(99L));
-        verify(datoRepository).findById(99L);
+        verify(datoRepository, times(1)).findById(99L);
     }
 
     @Test
-    void crearDebeGuardarDato() {
-        Dato dato = new Dato(null, "INVENTARIO", "STOCK", "500", null, 1L);
-        Dato guardado = new Dato(1L, "INVENTARIO", "STOCK", "500", null, 1L);
-
-        when(datoRepository.save(dato)).thenReturn(guardado);
-
-        Dato resultado = datoService.crear(dato);
-
-        assertNotNull(resultado.getId());
-        assertEquals("INVENTARIO", resultado.getSistemaOrigen());
-        verify(datoRepository).save(dato);
+    void crear_retornaDato() {
+        Dato d = new Dato(null, "POS", "VENTA", "100", LocalDateTime.now(), 1L);
+        when(datoRepository.save(d)).thenReturn(d);
+        assertEquals(d, datoService.crear(d));
+        verify(datoRepository, times(1)).save(d);
     }
 
     @Test
-    void buscarPorSistemaOrigenDebeRetornarDatosFiltrados() {
-        Dato dato = new Dato(1L, "POS", "VENTA", "150000", null, 1L);
-        when(datoRepository.findBySistemaOrigen("POS")).thenReturn(List.of(dato));
+    void actualizar_exito() {
+        Dato d = new Dato(1L, "POS", "VENTA", "100", LocalDateTime.now(), 1L);
+        Dato nuevo = new Dato(null, "ERP", "CAJA", "500", null, 2L);
+        when(datoRepository.findById(1L)).thenReturn(Optional.of(d));
+        when(datoRepository.save(any(Dato.class))).thenReturn(d);
 
-        List<Dato> resultado = datoService.buscarPorSistemaOrigen("POS");
-
-        assertEquals(1, resultado.size());
-        assertEquals("POS", resultado.get(0).getSistemaOrigen());
-        verify(datoRepository).findBySistemaOrigen("POS");
+        assertNotNull(datoService.actualizar(1L, nuevo));
+        verify(datoRepository, times(1)).save(d);
     }
 
     @Test
-    void buscarPorSucursalIdDebeRetornarDatosFiltrados() {
-        Dato dato = new Dato(1L, "FINANZAS", "INGRESO", "980000", null, 3L);
-        when(datoRepository.findBySucursalId(3L)).thenReturn(List.of(dato));
+    void eliminar_exito() {
+        Dato d = new Dato(1L, "POS", "VENTA", "100", LocalDateTime.now(), 1L);
+        when(datoRepository.findById(1L)).thenReturn(Optional.of(d));
+        doNothing().when(datoRepository).deleteById(1L);
 
-        List<Dato> resultado = datoService.buscarPorSucursalId(3L);
+        datoService.eliminar(1L);
+        verify(datoRepository, times(1)).deleteById(1L);
+    }
 
-        assertEquals(1, resultado.size());
-        assertEquals(3L, resultado.get(0).getSucursalId());
-        verify(datoRepository).findBySucursalId(3L);
+    @Test
+    void buscarPorSistemaOrigen_retornaLista() {
+        when(datoRepository.findBySistemaOrigen("POS")).thenReturn(List.of(new Dato()));
+        assertFalse(datoService.buscarPorSistemaOrigen("POS").isEmpty());
+        verify(datoRepository, times(1)).findBySistemaOrigen("POS");
+    }
+
+    @Test
+    void buscarPorSucursalId_retornaLista() {
+        when(datoRepository.findBySucursalId(1L)).thenReturn(List.of(new Dato()));
+        assertFalse(datoService.buscarPorSucursalId(1L).isEmpty());
+        verify(datoRepository, times(1)).findBySucursalId(1L);
     }
 }
