@@ -19,16 +19,26 @@ class DataLoaderTest {
     private DataLoader dataLoader;
 
     @Test
-    void run_ejecutaCargaInicial() {
+    void run_cuandoRepositorioVacio_debeCargarDatosSemilla() throws Exception {
+        // Arrange - Repositorio vacio, debe insertar datos iniciales
         when(datoRepository.count()).thenReturn(0L);
+
+        // Act
         dataLoader.run();
+
+        // Assert
         verify(datoRepository, times(10)).save(any());
     }
 
     @Test
-    void run_noCargaSiYaHayDatos() {
+    void run_cuandoRepositorioConDatos_noDebeCargarDatosSemilla() throws Exception {
+        // Arrange - Ya existen datos, no debe volver a insertar
         when(datoRepository.count()).thenReturn(5L);
+
+        // Act
         dataLoader.run();
+
+        // Assert
         verify(datoRepository, never()).save(any());
     }
 }
