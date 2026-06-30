@@ -159,8 +159,6 @@ Una vez que la consola de Docker muestre los contenedores corriendo, abre tu nav
 **URL (Modo Producción):** [http://localhost:8081](http://localhost:8081)
 *(El BFF Gateway empaqueta y sirve el Frontend estático directamente, evitando problemas de CORS).*
 
-*(Para desarrollo web en caliente con Vite, también puedes acceder por [http://localhost:3000](http://localhost:3000))*
-
 **Credenciales de Acceso:**
 Para probar la plataforma, utiliza los usuarios precargados en el Frontend:
 
